@@ -31,22 +31,24 @@ call %EMSCRIPTEN_SDK_DIR%\emsdk_env.bat
 :: which our Odin code is instructed to link to.
 ::
 :: Note that we use a separate define for raygui: -define:RAYGUI_WASM_LIB=env.o
-odin build source\main_web -target:freestanding_wasm32 -build-mode:obj -define:RAYLIB_WASM_LIB=env.o -define:RAYGUI_WASM_LIB=env.o -vet -strict-style -o:speed -out:%OUT_DIR%\game
+odin build source\main_web -target:js_wasm32 -build-mode:obj -define:RAYLIB_WASM_LIB=env.o -define:RAYGUI_WASM_LIB=env.o -vet -strict-style -o:speed -out:%OUT_DIR%\game
 IF %ERRORLEVEL% NEQ 0 exit /b 1
 
 for /f %%i in ('odin root') do set "ODIN_PATH=%%i"
 
+copy %ODIN_PATH%\core\sys\wasm\js\odin.js %OUT_DIR%
+
 :: Tell emscripten to compile the `main_web.c` file, which is the emscripten
 :: entry point. We also link in the build Odin code, raylib and raygui
-set files=source\main_web\main_web.c %OUT_DIR%\game.wasm.o %ODIN_PATH%\vendor\raylib\wasm\libraylib.a %ODIN_PATH%\vendor\raylib\wasm\libraygui.a
-set flags=-sUSE_GLFW=3 -sASYNCIFY -sASSERTIONS -DPLATFORM_WEB --shell-file source\main_web\index_template.html --preload-file assets
+set files=source\main_web\main_web.c %OUT_DIR%\game.wasm.o  %ODIN_PATH%\vendor\raylib\wasm\libraylib.a %ODIN_PATH%\vendor\raylib\wasm\libraygui.a
+set flags=-sUSE_GLFW=3 -sEXPORTED_FUNCTIONS="['_main', '_write']" -sASYNCIFY -sASSERTIONS -DPLATFORM_WEB --shell-file source\main_web\index_template.html --preload-file assets
 
 :: add `-g` to `emcc` call to enable debug symbols (works in chrome).
 ::
 :: We use cmd /c here because emcc tends to steal the whole command prompt, so
 :: nothing after it is ever run, regardless of if it succeeds or not.
-cmd /c emcc -o %OUT_DIR%\index.html %files% %flags%
+cmd /c emcc -g -o %OUT_DIR%\index.html %files% %flags%
 
-del %OUT_DIR%\game.wasm.o 
+rem del %OUT_DIR%\game.wasm.o 
 
 echo Web build created in %OUT_DIR%

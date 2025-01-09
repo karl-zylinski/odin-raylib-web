@@ -53,8 +53,26 @@
     <body>
         <canvas class=emscripten id=canvas oncontextmenu=event.preventDefault() tabindex=-1></canvas>
         <p id="output" />
+        <script type="text/javascript" src="odin.js"></script>
         <script>
+            var OdinMemoryInterface = new odin.WasmMemoryInterface();
+            OdinMemoryInterface.setIntSize(8);
+
+            var OdinImports = odin.setupDefaultImports(OdinMemoryInterface);
+
             var Module = {
+                instantiateWasm: (imports, successCallback) => {
+                    const newImports = {
+                        ...OdinImports,
+                        ...imports
+                    }
+                    return WebAssembly.instantiateStreaming(fetch('index.wasm'), newImports).then(function(output) {
+                        OdinMemoryInterface.setExports(output.instance.exports)
+                        OdinMemoryInterface.setMemory(output.instance.exports.memory)
+                        successCallback(output.instance);
+                        return output.instance.exports;
+                    });
+                },
                 print: (function() {
                     var element = document.getElementById('output');
                     if (element) element.value = ''; // clear browser cache

@@ -6,7 +6,6 @@ package main_web
 
 import "base:runtime"
 import "core:c"
-import "core:mem"
 import game ".."
 
 @(private="file")
@@ -20,11 +19,6 @@ web_context: runtime.Context
 @export
 web_init :: proc "c" () {
 	context = runtime.default_context()
-	context.allocator = emscripten_allocator()
-
-	default_temp_allocator_init(&temp_allocator, 1*mem.Megabyte)
-	context.temp_allocator = default_temp_allocator(&temp_allocator)
-	context.logger = create_emscripten_logger()
 	web_context = context
 
 	game.init()

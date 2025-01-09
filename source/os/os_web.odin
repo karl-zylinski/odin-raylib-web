@@ -3,7 +3,6 @@ This implements some often-used procs from `core:os` but using the libc stuff
 that emscripten links in.
 */
 
-#+build freestanding
 #+build wasm32, wasm64p32
 #+private
 

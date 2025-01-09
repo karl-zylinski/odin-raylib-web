@@ -1,5 +1,5 @@
-#+build !freestanding
-#+build !wasm32, !wasm64p32
+#+build !wasm32
+#+build !wasm64p32
 #+private
 
 package web_compatible_os
