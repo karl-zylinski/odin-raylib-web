@@ -27,7 +27,7 @@ set files=%OUT_DIR%\game.wasm.o %ODIN_PATH%\vendor\raylib\wasm\libraylib.a %ODIN
 
 :: index_template.html contains the javascript code that calls the procedures in
 :: source/main_web/main_web.odin
-set flags=-sUSE_GLFW=3 -sWASM_BIGINT -sWARN_ON_UNDEFINED_SYMBOLS=0 -sASSERTIONS --shell-file source\main_web\index_template.html --preload-file assets
+set flags=-sEXPORTED_RUNTIME_METHODS=['HEAPF32'] -sUSE_GLFW=3 -sWASM_BIGINT -sWARN_ON_UNDEFINED_SYMBOLS=0 -sASSERTIONS --shell-file source\main_web\index_template.html --preload-file assets
 
 :: For debugging: Add `-g` to `emcc` (gives better error callstack in chrome)
 ::
