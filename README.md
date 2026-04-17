@@ -8,7 +8,6 @@ Live example: https://zylinski.se/odin-raylib-web/
 ## Requirements
 
 - **Emscripten**. Follow instructions here: https://emscripten.org/docs/getting_started/downloads.html (the stuff under "Installation instructions using the emsdk (recommended)").
-- **Recent Odin compiler**: This uses Raylib binding changes that were done on January 1, 2025.
 
 ## Getting started
 
