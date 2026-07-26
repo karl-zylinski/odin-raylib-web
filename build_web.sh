@@ -17,13 +17,13 @@ export EMSDK_QUIET=1
 # up in env.o
 #
 # Note that there is a rayGUI equivalent: -define:RAYGUI_WASM_LIB=env.o
-odin build source/main_web -target:js_wasm32 -build-mode:obj -define:RAYLIB_WASM_LIB=env.o -define:RAYGUI_WASM_LIB=env.o -vet -strict-style -out:$OUT_DIR/game.wasm.o
+odin build source/main_web -target:js_wasm32 -build-mode:obj -define:RAYLIB_WASM_LIB=env.o -define:RAYGUI_WASM_LIB=env.o -vet -strict-style -out:$OUT_DIR/game.wasm.obj
 
 ODIN_PATH=$(odin root)
 
 cp $ODIN_PATH/core/sys/wasm/js/odin.js $OUT_DIR
 
-files="$OUT_DIR/game.wasm.o ${ODIN_PATH}/vendor/raylib/wasm/libraylib.a ${ODIN_PATH}/vendor/raylib/wasm/libraygui.a"
+files="$OUT_DIR/game.wasm.obj ${ODIN_PATH}/vendor/raylib/wasm/libraylib.web.a ${ODIN_PATH}/vendor/raylib/wasm/libraygui.a"
 
 # index_template.html contains the javascript code that calls the procedures in
 # source/main_web/main_web.odin
@@ -32,6 +32,6 @@ flags="-sEXPORTED_RUNTIME_METHODS=['HEAPF32'] -sUSE_GLFW=3 -sWASM_BIGINT -sWARN_
 # For debugging: Add `-g` to `emcc` (gives better error callstack in chrome)
 emcc -o $OUT_DIR/index.html $files $flags
 
-rm $OUT_DIR/game.wasm.o
+rm $OUT_DIR/game.wasm.obj
 
 echo "Web build created in ${OUT_DIR}"
